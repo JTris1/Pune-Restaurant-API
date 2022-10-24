@@ -27,13 +27,12 @@ def index():
 def queryRestaurants():
     if 'name' in request.args:
         cursor = restaurants.find_one({'Restaurant_Name': request.args['name']})
+        json_data = dumps(cursor)
+        resp = Response(json_data, status=200, mimetype="application/json")
+        return resp
+    else:
+        cursor = restaurants.find()
         list_cur = list(cursor)
         json_data = dumps(list_cur)
         resp = Response(json_data, status=200, mimetype="application/json")
         return resp
-    # else:
-    #     cursor = restaurants.find()
-    #     list_cur = list(cursor)
-    #     json_data = dumps(list_cur)
-    #     resp = Response(json_data, status=200, mimetype="application/json")
-    #     return resp

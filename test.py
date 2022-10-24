@@ -30,6 +30,11 @@ def queryRestaurants():
         json_data = dumps(cursor)
         resp = Response(json_data, status=200, mimetype="application/json")
         return resp
+    elif 'known_for_food' in request.args:
+        cursor = restaurants.find({'Known_For_Food': request.args['known_for_food']})
+        json_data = dumps(cursor)
+        resp = Response(json_data, status=200, mimetype="application/json")
+        return resp
     else:
         cursor = restaurants.find()
         list_cur = list(cursor)

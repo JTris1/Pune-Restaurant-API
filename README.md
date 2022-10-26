@@ -42,6 +42,5 @@ Retrieves all restaurants in the database.
 
 Supports Query Strings
 
-Example: 
-----------
+##### Example: 
 **/restaurants?name=Vohuman+Cafe**

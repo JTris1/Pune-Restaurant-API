@@ -72,11 +72,10 @@ def getNear():
     # Return 400 if no arguments are supplied (400: Bad Request)
     if(len(req_list) == 0):
         return Response(status=400)
-    
-    print(req_list)
 
     longitude = float(req_list['longitude'][0])
     latitude = float(req_list['latitude'][0])
+    maxDistance = int(req_list['max-distance'][0])
 
     cursor = restaurants.find({
         'Location': {
@@ -85,11 +84,11 @@ def getNear():
                     'type': 'Point',
                     'coordinates': [longitude, latitude]
                 },
-                '$maxDistance': 10000
+                '$maxDistance': maxDistance
             }
         }
     })
-    
+
     json_data = dumps(cursor)
     resp = Response(json_data, status=200, mimetype="application/json")
     return resp

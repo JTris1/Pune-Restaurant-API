@@ -52,7 +52,7 @@ def get():
             filter_list['Longitude'] = float(lat_long[1])
         elif(key == 'locality'):
             neighborhood = req_list['locality'][0]
-            filter_list['Locality'] = re.compile('^' + neighborhood, re.IGNORECASE)
+            filter_list['Locality'] = re.compile(neighborhood, re.IGNORECASE)
 
     # IF filter_list IS EMPTY, RESPOND WITH 404
     if(filter_list == {}):
@@ -93,8 +93,13 @@ def getNear():
 
     cursor = restaurants.find({
         'Location': {
-            '$near': [longitude, latitude],
-            '$maxDistance': 10000
+            '$near': {
+                '$geometry': {
+                    'type': 'Point',
+                    'coordinates': [longitude, latitude]
+                },
+                '$maxDistance': 10000
+            }
         }
     })
 

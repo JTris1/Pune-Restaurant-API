@@ -43,7 +43,8 @@ def get():
             else:
                 filter_list['Restaurant_Name'] = re_name
         elif(key == 'category'):
-            filter_list['Category'] = req_list['category'][0]
+            re_category = re.compile(req_list['category'][0], re.IGNORECASE)
+            filter_list['Category'] = re_category
         elif(key == 'location'):
             # Split 'location' comma-seperated query into a list from a string 
             lat_long = str(req_list['location'][0]).split(',')
@@ -59,6 +60,45 @@ def get():
 
     # Query data with filter list
     cursor = restaurants.find(filter_list)
+    json_data = dumps(cursor)
+    resp = Response(json_data, status=200, mimetype="application/json")
+    return resp
+
+@app.route('/restaurants/near')
+def getNear():
+    # Assings request args to a dictionary
+    req_list = request.args.to_dict(flat=False);
+
+    # Return 400 if no arguments are supplied (400: Bad Request)
+    if(len(req_list) == 0):
+        return Response(status=400)
+    
+    print(req_list)
+
+    longitude = float(req_list['longitude'][0])
+    latitude = float(req_list['latitude'][0])
+
+    # $near requires specifying longitude before latitude
+    # cursor = restaurants.find({
+    #     'Location': {
+    #         '$near': {
+    #             '$geometry': {
+    #                 'type': "Point",
+    #                 'coordinates': [longitude, latitude]
+    #             },
+    #             '$maxDistance': 10000
+    #         }
+    #     }
+    # })
+
+    cursor = restaurants.find({
+        'Location': {
+            '$near': [longitude, latitude],
+            '$maxDistance': 10000
+        }
+    })
+
+    # Query data with filter list
     json_data = dumps(cursor)
     resp = Response(json_data, status=200, mimetype="application/json")
     return resp

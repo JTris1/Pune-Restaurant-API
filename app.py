@@ -78,19 +78,6 @@ def getNear():
     longitude = float(req_list['longitude'][0])
     latitude = float(req_list['latitude'][0])
 
-    # $near requires specifying longitude before latitude
-    # cursor = restaurants.find({
-    #     'Location': {
-    #         '$near': {
-    #             '$geometry': {
-    #                 'type': "Point",
-    #                 'coordinates': [longitude, latitude]
-    #             },
-    #             '$maxDistance': 10000
-    #         }
-    #     }
-    # })
-
     cursor = restaurants.find({
         'Location': {
             '$near': {
@@ -102,8 +89,7 @@ def getNear():
             }
         }
     })
-
-    # Query data with filter list
+    
     json_data = dumps(cursor)
     resp = Response(json_data, status=200, mimetype="application/json")
     return resp

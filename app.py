@@ -6,6 +6,7 @@ from pprint import pprint
 from flask import Flask, render_template, request, Response, url_for, redirect, jsonify
 from dotenv import dotenv_values
 from pymongo import MongoClient
+from shapely.geometry import shapely
 from bson.json_util import dumps
 
 config = dotenv_values(".env")
@@ -90,5 +91,25 @@ def getNear():
     })
 
     json_data = dumps(cursor)
+    resp = Response(json_data, status=200, mimetype="application/json")
+    return resp
+
+@app.route('/restaurants/within')
+def getWithin():
+    req_list = request.args.to_dict(flat=False)
+
+    if(len(req_list) == 0):
+        return Response(status=400)
+
+    latitude = float(req_list['latitude'][0])
+    longitude = float(req_list['longitude'][0])
+
+    location = [latitude, longitude]
+
+    # Returns only 'coordinates' in the filter
+    neighborhood_coords = neighborhoods.find({}, {'geometry': {'coordinates': 1}})
+    print(neighborhood_coords)
+
+    json_data = dumps(neighborhood_coords)
     resp = Response(json_data, status=200, mimetype="application/json")
     return resp

@@ -6,7 +6,7 @@ from pprint import pprint
 from flask import Flask, render_template, request, Response, url_for, redirect, jsonify
 from dotenv import dotenv_values
 from pymongo import MongoClient
-from shapely.geometry import shapely
+from shapely.geometry import Point, Polygon
 from bson.json_util import dumps
 
 config = dotenv_values(".env")
@@ -100,16 +100,28 @@ def getWithin():
 
     if(len(req_list) == 0):
         return Response(status=400)
+    
+    req_neighborhood = req_list['neighborhood'][0]
 
-    latitude = float(req_list['latitude'][0])
-    longitude = float(req_list['longitude'][0])
+    # Returns all 'coordinates' for supplied neighborhood from queryString (forms the boundary)
+    cursor = neighborhoods.find(
+        {
+            'properties': {
+                'name': req_neighborhood
+            }
+        }, 
+        {
+            '_id': 0,
+            'geometry': {
+                'coordinates': 1
+            }
+        })
 
-    location = [latitude, longitude]
+    for i in cursor:
+        print(i)
+        # THIS IS RETURNING ONE "line". Need to figure out how to split the data up into its only lines, like a dict
 
-    # Returns only 'coordinates' in the filter
-    neighborhood_coords = neighborhoods.find({}, {'geometry': {'coordinates': 1}})
-    print(neighborhood_coords)
 
-    json_data = dumps(neighborhood_coords)
+    json_data = dumps(cursor)
     resp = Response(json_data, status=200, mimetype="application/json")
     return resp

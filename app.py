@@ -104,7 +104,7 @@ def getWithin():
     req_neighborhood = req_list['neighborhood'][0]
 
     # Returns all 'coordinates' for supplied neighborhood from queryString (forms the boundary)
-    cursor = neighborhoods.find_one(
+    boundary = neighborhoods.find_one(
         {
             'properties': {
                 'name': req_neighborhood
@@ -117,10 +117,22 @@ def getWithin():
             }
         })
     
-    # print(cursor)
-    for i in cursor:
-        for x in i:
-            print(x)
+    neighborhood_boundary = boundary['geometry']['coordinates']
+    print(neighborhood_boundary)
+    
+    # print(cursor['geometry']['coordinates'])
+
+    cursor = restaurants.find({
+        'Location': {
+            '$geoWithin': {
+                '$geometry': {
+                    'type': 'Polygon',
+                    'coordinates': neighborhood_boundary
+                }
+            }
+        }
+    })
+
     json_data = dumps(cursor)
     resp = Response(json_data, status=200, mimetype="application/json")
     return resp

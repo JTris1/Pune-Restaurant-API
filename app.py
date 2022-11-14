@@ -104,24 +104,23 @@ def getWithin():
     req_neighborhood = req_list['neighborhood'][0]
 
     # Returns all 'coordinates' for supplied neighborhood from queryString (forms the boundary)
-    cursor = neighborhoods.find(
+    cursor = neighborhoods.find_one(
         {
             'properties': {
                 'name': req_neighborhood
             }
-        }, 
+        },
         {
             '_id': 0,
             'geometry': {
                 'coordinates': 1
             }
         })
-
+    
+    # print(cursor)
     for i in cursor:
-        print(i)
-        # THIS IS RETURNING ONE "line". Need to figure out how to split the data up into its only lines, like a dict
-
-
+        for x in i:
+            print(x)
     json_data = dumps(cursor)
     resp = Response(json_data, status=200, mimetype="application/json")
     return resp

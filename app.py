@@ -118,7 +118,6 @@ def getWithin():
         })
     
     neighborhood_boundary = boundary['geometry']['coordinates']
-    print(neighborhood_boundary)
     
     # print(cursor['geometry']['coordinates'])
 

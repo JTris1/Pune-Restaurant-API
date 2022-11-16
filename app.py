@@ -118,8 +118,6 @@ def getWithin():
         })
     
     neighborhood_boundary = boundary['geometry']['coordinates']
-    
-    # print(cursor['geometry']['coordinates'])
 
     cursor = restaurants.find({
         'Location': {

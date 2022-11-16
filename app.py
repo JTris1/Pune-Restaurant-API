@@ -54,6 +54,12 @@ def get():
         elif(key == 'locality'):
             neighborhood = req_list['locality'][0]
             filter_list['Locality'] = re.compile(neighborhood, re.IGNORECASE)
+        elif(key == 'rating'):
+            rating = req_list['rating']
+            filter_list['Dining_Rating'] = float(rating[0])
+        elif(key == 'food'):
+            re_food = re.compile(req_list['food'][0], re.IGNORECASE)
+            filter_list['Known_For_Food'] = re_food
 
     # IF filter_list IS EMPTY, RESPOND WITH 404
     if(filter_list == {}):

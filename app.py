@@ -60,6 +60,7 @@ def get():
         elif(key == 'food'):
             re_food = re.compile(req_list['food'][0], re.IGNORECASE)
             filter_list['Known_For_Food'] = re_food
+            
 
     # IF filter_list IS EMPTY, RESPOND WITH 404
     if(filter_list == {}):
